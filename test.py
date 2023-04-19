@@ -1,11 +1,11 @@
 from selenium import webdriver # 導入webdriver，讓我們對瀏覽器溝通。
+
 from selenium.webdriver.common.by import By # 在 Selenium 中，By 是一個類別，它包含了多種元素定位方式，例如 ID、Name、Class Name、CSS Selector、XPath 
 from selenium.webdriver.support.ui import WebDriverWait # 我們可以指定一個最長等待時間，然後在這段時間內不斷地查找元素，直到元素出現為止。
 from selenium.webdriver.support import expected_conditions as EC # 包含了多種等待條件，例如元素是否可見、元素是否存在、元素是否可點擊
-
 from selenium.webdriver.common.keys import Keys # 導入鍵盤模組，通過 Keys 類別，我們可以模擬鍵盤操作
-import time # 導入標準庫中的時間模組（time module），這個模組提供了與時間有關的函數和方法。
 
+import time # 導入標準庫中的時間模組（time module），這個模組提供了與時間有關的函數和方法。
 import os # os 模組可以讓你建立、讀取、寫入檔案，刪除檔案或目錄
 import wget # 這個模組使用前需要確認是否有安裝過，請使用pip list查看。若要安裝請輸入指令：pip install wget 
 # wget 用於從網絡上下載文件，支持 HTTP、HTTPS 和 FTP 等多種協議。
@@ -58,10 +58,6 @@ def Dcard():
     time.sleep(10) #
     print("done!") # 執行結束
 
-# Dcard()
-# PTT()
-
-
 def testPTT(): 
     driver.get("https://www.ptt.cc/bbs/Stock/index.html")
     print("------ 進入PTT股票版 ------")
@@ -95,7 +91,6 @@ def testPTT():
         mydb.close() # 關閉資料庫連線
         getTitles() # 在新的頁面後重新走訪
     getTitles()
-testPTT()
 
 def eney():
     driver.get("http://www.eyny.com/index.php")
@@ -125,5 +120,44 @@ def eney():
             count+=1
         time.sleep(10)
     stock()
+def stock():
+    driver.get("https://www.cnyes.com/usstock")
+    print("------ "+driver.title+" ------")
+    def search():
+        search = driver.find_element(By.XPATH,'//*[@id="anue-ga-wrapper"]/div[1]/div[1]/div/nav/header/div[2]/div/div[1]/div/input')
+        search.send_keys("美國10年公債殖利率")
+        time.sleep(1)
+        search.send_keys(Keys.RETURN)
+        time.sleep(1)
+        products = driver.find_elements(By.CLASS_NAME,'row')
+        productsCategory = driver.find_elements(By.CLASS_NAME,'row_cat')
+        stocksCode = driver.find_elements(By.CLASS_NAME,'info_code')
+        stocksTitle = driver.find_elements(By.CLASS_NAME,'info_title')
+        for i in range(len(products)):
+            print("股票代碼："+stocksCode[i].text)
+            print("股票中文名稱："+stocksTitle[i].text)
+            print(productsCategory[i].text)
+            productCategory = productsCategory[i].text
+            products[i].click()
+            if( productCategory == "基金"):
+                stockPrice = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH,'//div[@class="_1SFOH _1c2Sw"]'))
+                )
+                print("目前單位淨值："+stockPrice.text)
+            elif(productCategory == "商品期貨"):
+                result = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "info-lp"))
+                )
+                print("目前殖利率："+result.text)
+            print("------")
+            driver.back() # 回到上一頁
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "header_title"))
+            )
+    search()
+    print("run done!")
+# stock()
+# Dcard()
+# PTT()
+# testPTT()
 # eney()
-# search = driver.find_element_by_name("query") # 舊的語法，目前不適用。
