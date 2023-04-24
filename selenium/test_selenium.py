@@ -12,16 +12,12 @@ import wget  # 這個模組使用前需要確認是否有安裝過，請使用pi
 # wget 用於從網絡上下載文件，支持 HTTP、HTTPS 和 FTP 等多種協議。
 import mysql.connector  # 導入連線mysql的模組
 
-# options = webdriver.ChromeOptions()
-# options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
-
-# driver = webdriver.Chrome(options=options)
-
 # ------ 下面為webdriver執行檔位置、檔案本體 ------
 PATH = "C:/Users/zackhuang/Desktop/chromedriver_win32.exe"  # 這是webdriver程序檔案的路徑。
 driver = webdriver.Chrome(PATH)  # 透過webdriver打開瀏覽器
 # ------ The End下面為webdriver執行檔位置、檔案本體 ------
-
+driver.get("https://togkf.tw/home")
+print(driver.page_source)
 
 def PTT():  # 如目前到問題是如果進入到沒有link的標籤則爬蟲會中斷
     driver.get("https://www.ptt.cc/bbs/Stock/index.html")  # 取得PTT 股票版網址並進入
@@ -58,7 +54,6 @@ def PTT():  # 如目前到問題是如果進入到沒有link的標籤則爬蟲�
 
     viewPost()  # 開始走訪文章
 
-
 def Dcard():
     driver.get("https://www.dcard.tw/f")  # Dcard
     time.sleep(1)  # 載入網頁需要一點時間，所以這裡需要延遲一下
@@ -69,7 +64,6 @@ def Dcard():
     search.send_keys(Keys.RETURN)  # 在搜尋欄位按下鍵盤的Enter鍵。
     time.sleep(10)  #
     print("done!")  # 執行結束
-
 
 def testPTT():
     driver.get("https://www.ptt.cc/bbs/Stock/index.html")
@@ -107,7 +101,6 @@ def testPTT():
 
     getTitles()
 
-
 def eney():
     driver.get("http://www.eyny.com/index.php")
     print(print("------ 進入伊利討論區首頁 ------"))
@@ -138,7 +131,6 @@ def eney():
         time.sleep(10)
 
     stock()
-
 
 def stock():
     driver.get("https://www.cnyes.com/usstock")
@@ -184,32 +176,37 @@ def stock():
     search()
     print("run done!")
 
+def addCookie():
+    driver.implicitly_wait(10) # 網站Title隱含等待10秒鐘，以便等待瀏覽器成功載入HTML網頁，參數10秒是最長等待時間。
+    driver.get("https://httpbin.org/cookies") # 輸入網址並進入網站
+    cookie = {
+        "name":"over18","value":"1"
+    }
+    driver.add_cookie(cookie) # 將cookie加入
+    driver.refresh() # 刷新页面以应用cookie
+    print(driver.title) # 打印出網站tiele
+    html = driver.page_source # 網站內容
+    print(html)
+    time.sleep(10)
 
-# stock()
-# driver.get("https://shopee.tw/")
-# search = driver.find_element(By.CLASS_NAME,"shopee-searchbar-input__input")
-# search.send_keys("衣服")
-# search.send_keys(Keys.RETURN)
-# WebDriverWait(driver, 10).until(
-#     EC.presence_of_element_located((By.CLASS_NAME,'AF3TXt'))
-# )
-# print("666")
-# time.sleep(0.5)
-# imgs = driver.find_element(By.XPATH, '//div[@class="_8VOHhl aAd6P9"]')
-# print(imgs.text)
-# imgs.tag_name
-# for img in imgs:
-#     print(img.get_attribute("src"))
-# time.sleep(5)
-# Photos = driver.find_elements(By.XPATH,'//div[@class="_7DTxhh vc8g9F"]')
-# # PhotoText = Photos.get_attribute("alt")
-# for i in range(len(Photos)):
-#     print(Photos[i].get_attribute("alt"))
-# time.sleep(3)
+def checkUserAgent():
+    driver.implicitly_wait(10) # 網站Title隱含等待10秒鐘，以便等待瀏覽器成功載入HTML網頁，參數10秒是最長等待時間。
+    driver.get("https://httpbin.org/user-agent")
+    print(driver.page_source)
+    # time.sleep(3)
 
-# Dcard()
-# PTT()
-# testPTT()
-# eney()
-# driver.get("https://httpbin.org/user-agent")
-# time.sleep(10)
+def Headless():
+    from selenium.webdriver.chrome.options import Options
+    options = Options()
+    options.add_argument("--headless")
+    driver = webdriver.Chrome(PATH,options=options)
+    driver.implicitly_wait(10)
+    driver.get("https://togkf.tw/home")
+    print(driver.title)
+    print(driver.page_source)
+# addCookie()
+# checkUserAgent()
+
+
+
+    

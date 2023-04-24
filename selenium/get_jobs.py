@@ -17,7 +17,7 @@ driver.get(url)
 
 
 search = driver.find_element(By.NAME , "ikeyword")
-search.send_keys("Python")
+search.send_keys("software engineer")
 time.sleep(1)
 search.send_keys(Keys.RETURN)
 time.sleep(1)
@@ -27,7 +27,7 @@ print("------即將開始滾動頁面------")
 for x in range(pages):
     js = "scrollTo(0,document.body.scrollHeight)"
     driver.execute_script(js)
-    time.sleep(1)
+    time.sleep(2)
     print("目前滾動第"+str(x+1)+"頁。")
 print("------滾動頁面結束------")
 
