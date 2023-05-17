@@ -4,7 +4,7 @@ import requests
 # url = "https://www.dcard.tw/f"
 # ------以下簡單測試requests------
 url = "https://togkf.tw/home"
-r= requests.get(url)
+r = requests.get(url)
 print(r.text)
 
 
